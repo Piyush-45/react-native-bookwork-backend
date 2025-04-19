@@ -72,15 +72,15 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     try {
-        const { emailOrUsername, password } = req.body;
+        const { email, password } = req.body;
 
-        if (!emailOrUsername || !password) {
+        if (!email || !password) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
         // Allow login with email or username
         const user = await User.findOne({
-            $or: [{ email: emailOrUsername }, { username: emailOrUsername }]
+            $or: [{ email: email }, { username: email }]
         });
 
         if (!user) {
