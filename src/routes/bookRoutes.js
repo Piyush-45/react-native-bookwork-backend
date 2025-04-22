@@ -38,7 +38,9 @@ router.post('/', protectRoute, async (req, res) => {
     try {
         const { title, caption, rating, image } = req.body;
         if (!title || !caption || !rating || !image) {
-            return (res.status(400).json({ message: 'please provider all fields' }))
+            return res.status(400).json({ message: 'please provide all fields' });
+
+
         }
         //! upload the image to cloudinary
 
@@ -61,6 +63,20 @@ router.post('/', protectRoute, async (req, res) => {
         res.status(500).json({ message: error.message })
     }
 })
+router.get('/user/:userId', async (req, res) => {
+    try {
+        const userId = req.params.userId;
+
+        const books = await Book.find({ user: userId })
+            .sort({ createdAt: -1 })
+            .populate("user", "username profileImage"); // optional if you want user info
+
+        res.json({ books });
+    } catch (error) {
+        console.error("Error fetching books by user:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+});
 
 
 router.delete('/:id', async (req, res) => {
